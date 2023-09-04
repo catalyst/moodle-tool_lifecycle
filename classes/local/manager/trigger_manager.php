@@ -236,11 +236,22 @@ class trigger_manager extends subplugin_manager {
      * @throws \coding_exception
      */
     public static function get_trigger_types() {
+        // Sub plugins in 'trigger' folder.
         $subplugins = \core_component::get_plugin_list('lifecycletrigger');
         $result = array();
         foreach (array_keys($subplugins) as $plugin) {
             $result[$plugin] = get_string('pluginname', 'lifecycletrigger_' . $plugin);
         }
+
+        // Sub plugins via callback.
+        $subplugins = get_plugins_with_function('lifecycle_trigger_types');
+        foreach ($subplugins as $plugintype => $plugins) {
+            foreach ($plugins as $pluginname => $pluginfunction) {
+                $plugin = $plugintype.'_'.$pluginname;
+                $result[$plugin] = $pluginfunction();
+            }
+        }
+
         return $result;
     }
 

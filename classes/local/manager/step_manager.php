@@ -228,11 +228,22 @@ class step_manager extends subplugin_manager {
      * @throws \coding_exception
      */
     public static function get_step_types() {
+        // Sub plugins in 'step' folder.
         $subplugins = \core_component::get_plugin_list('lifecyclestep');
         $result = array();
         foreach (array_keys($subplugins) as $plugin) {
             $result[$plugin] = get_string('pluginname', 'lifecyclestep_' . $plugin);
         }
+
+        // Sub plugins via callback.
+        $subplugins = get_plugins_with_function('lifecycle_step_types');
+        foreach ($subplugins as $plugintype => $plugins) {
+            foreach ($plugins as $pluginname => $pluginfunction) {
+                $plugin = $plugintype.'_'.$pluginname;
+                $result[$plugin] = $pluginfunction();
+            }
+        }
+
         return $result;
     }
 
