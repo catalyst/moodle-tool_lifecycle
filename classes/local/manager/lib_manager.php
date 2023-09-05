@@ -116,13 +116,11 @@ class lib_manager {
         }
 
         // Plugins defined under "lifecycle" name space.
-        $classes = \core_component::get_component_classes_in_namespace($subpluginname, 'lifecycle');
-        // Array key is the class name.
-        $classes = array_keys($classes);
-        foreach ($classes as $class) {
-            if (is_a($class, \tool_lifecycle\trigger\base::class, true)) {
-                return new $class();
-            }
+        // The base class has already been checked by get_trigger_types or get_steps_types.
+        $classname = !$libsubtype ? $subplugintype : $libsubtype;
+        $classname = "$subpluginname\\lifecycle\\$classname";
+        if (class_exists($classname)) {
+            return new $classname();
         }
 
         return null;

@@ -236,14 +236,16 @@ class trigger_manager extends subplugin_manager {
      * @throws \coding_exception
      */
     public static function get_trigger_types() {
-        // Sub plugins in 'trigger' folder.
         $subplugins = \core_component::get_plugin_list('lifecycletrigger');
         $result = array();
         foreach (array_keys($subplugins) as $plugin) {
             $result[$plugin] = get_string('pluginname', 'lifecycletrigger_' . $plugin);
         }
 
-        // Plugins defined under "lifecycle" name space.
+        // Additional sub plugins defined under "lifecycle" name space, ie "local_newtrigger\lifecycle".
+        // The class name must be trigger (trigger.php) and placed under "classes/lifecycle" folder.
+        // The name space must be "local_newtrigger\lifecycle"
+        // The class must extend the trigger base classes (base_automatic or base_manual).
         foreach (array_keys(\core_component::get_plugin_types()) as $plugintype) {
             $potentialtriggers = \core_component::get_plugin_list_with_class($plugintype, 'lifecycle\\trigger');
             foreach ($potentialtriggers as $plugin => $potentialtrigger) {

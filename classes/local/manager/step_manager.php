@@ -235,12 +235,17 @@ class step_manager extends subplugin_manager {
             $result[$plugin] = get_string('pluginname', 'lifecyclestep_' . $plugin);
         }
 
-        // Sub plugins via callback.
-        $subplugins = get_plugins_with_function('lifecycle_step_types');
-        foreach ($subplugins as $plugintype => $plugins) {
-            foreach ($plugins as $pluginname => $pluginfunction) {
-                $plugin = $plugintype.'_'.$pluginname;
-                $result[$plugin] = $pluginfunction();
+        // Additional sub plugins defined under "lifecycle" name space, ie "local_newstep\lifecycle".
+        // The class name must be step (step.php) and placed under "classes/lifecycle" folder.
+        // The name space must be "local_newstep\lifecycle"
+        // The class must extend the step base classes (base_automatic or base_manual).
+        foreach (array_keys(\core_component::get_plugin_types()) as $plugintype) {
+            $potentialsteps = \core_component::get_plugin_list_with_class($plugintype, 'lifecycle\\step');
+            foreach ($potentialsteps as $plugin => $potentialstep) {
+                // Check if it implements the trigger base class.
+                if (is_a($potentialstep, \tool_lifecycle\step\libbase::class, true)) {
+                    $result[$plugin] = get_string('pluginname', $plugin);
+                }
             }
         }
 
