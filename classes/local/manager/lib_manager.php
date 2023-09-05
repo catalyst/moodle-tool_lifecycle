@@ -43,18 +43,7 @@ class lib_manager {
      * @return \tool_lifecycle\trigger\base
      */
     public static function get_trigger_lib($subpluginname) {
-        $triggerwithclasses = trigger_manager::get_trigger_types_with_class();
-        return new $triggerwithclasses[$subpluginname]();
-    }
-
-    /**
-     * Gets the trigger class of a subplugin lib.
-     *
-     * @param string $subpluginname name of the subplugin
-     * @return \tool_lifecycle\trigger\base
-     */
-    public static function get_trigger_class($subpluginname) {
-        return self::get_class($subpluginname, 'trigger');
+        return self::get_lib($subpluginname, 'trigger');
     }
 
     /**
@@ -64,7 +53,7 @@ class lib_manager {
      * @throws \coding_exception
      */
     public static function get_manual_trigger_lib($subpluginname) {
-        $lib = self::get_trigger_lib($subpluginname);
+        $lib = self::get_lib($subpluginname, 'trigger');
         if (! $lib instanceof base_manual) {
             throw new \coding_exception("The requested trigger is no manual trigger.");
         }
@@ -78,7 +67,7 @@ class lib_manager {
      * @throws \coding_exception
      */
     public static function get_automatic_trigger_lib($subpluginname) {
-        $lib = self::get_trigger_lib($subpluginname);
+        $lib = self::get_lib($subpluginname, 'trigger');
         if (! $lib instanceof base_automatic) {
             throw new \coding_exception("The requested trigger is no automatic trigger.");
         }
@@ -106,42 +95,36 @@ class lib_manager {
     }
 
     /**
-     * Gets the instance of base class of a subplugin lib with a specific type and name.
+     * Gets the base class of a subplugin lib with a specific type and name.
      * @param string $subpluginname name of the subplugin
      * @param string $subplugintype type of the subplugin (e.g. trigger, step)
      * @param string $libsubtype allows to query different lib classes.
      * @return null|base|libbase
      */
     private static function get_lib($subpluginname, $subplugintype, $libsubtype = '') {
-        $extendedclass = self::get_class($subpluginname, $subplugintype, $libsubtype);
-        if (is_null($extendedclass)) {
-            return null;
-        } else {
-            return new $extendedclass();
-        }
-    }
-
-    /**
-     * Gets the base class of a subplugin lib with a specific type and name.
-     *
-     * @param string $subpluginname name of the subplugin
-     * @param string $subplugintype type of the subplugin (e.g. trigger, step)
-     * @param string $libsubtype allows to query different lib classes.
-     * @return null|base|libbase
-     */
-    public static function get_class($subpluginname, $subplugintype, $libsubtype = '') {
+        // Plugins defined in subplugins.json file.
         $triggerlist = \core_component::get_plugin_list('lifecycle' . $subplugintype);
-        if (!array_key_exists($subpluginname, $triggerlist)) {
-            return null;
-        }
-        $filename = $triggerlist[$subpluginname].'/'.$libsubtype.'lib.php';
-        if (file_exists($filename)) {
-            require_once($filename);
-            $extendedclass = "tool_lifecycle\\$subplugintype\\$libsubtype$subpluginname";
-            if (class_exists($extendedclass)) {
-                return $extendedclass;
+        if (array_key_exists($subpluginname, $triggerlist)) {
+            $filename = $triggerlist[$subpluginname].'/'.$libsubtype.'lib.php';
+            if (file_exists($filename)) {
+                require_once($filename);
+                $extendedclass = "tool_lifecycle\\$subplugintype\\$libsubtype$subpluginname";
+                if (class_exists($extendedclass)) {
+                    return new $extendedclass();
+                }
             }
         }
+
+        // Plugins defined under "lifecycle" name space.
+        $classes = \core_component::get_component_classes_in_namespace($subpluginname, 'lifecycle');
+        // Array key is the class name.
+        $classes = array_keys($classes);
+        foreach ($classes as $class) {
+            if (is_a($class, \tool_lifecycle\trigger\base::class, true)) {
+                return new $class();
+            }
+        }
+
         return null;
     }
 }

@@ -236,40 +236,24 @@ class trigger_manager extends subplugin_manager {
      * @throws \coding_exception
      */
     public static function get_trigger_types() {
-        // Replace class with pluginname.
-        $subplugins = self::get_trigger_types_with_class();
-        foreach (array_keys($subplugins) as $plugin) {
-            $result[$plugin] = get_string('pluginname', $plugin);
-        }
-
-        return $result;
-    }
-
-    /**
-     * This function returns the trigger types with the class name.
-     *
-     * @return array
-     */
-    public static function get_trigger_types_with_class() {
-        $result = [];
-
-        // Existing 'lifecycle trigger' defined in lib.php .
+        // Sub plugins in 'trigger' folder.
         $subplugins = \core_component::get_plugin_list('lifecycletrigger');
+        $result = array();
         foreach (array_keys($subplugins) as $plugin) {
-            $component = 'lifecycletrigger_' . $plugin;
-            $result[$component] = lib_manager::get_trigger_class($plugin);
+            $result[$plugin] = get_string('pluginname', 'lifecycletrigger_' . $plugin);
         }
 
-        // New 'lifecycle trigger' defined in a class called 'lifecycle_trigger' in the plugin class folder.
+        // Plugins defined under "lifecycle" name space.
         foreach (array_keys(\core_component::get_plugin_types()) as $plugintype) {
-            $potentialtriggers = \core_component::get_plugin_list_with_class($plugintype, 'lifecycle_trigger');
+            $potentialtriggers = \core_component::get_plugin_list_with_class($plugintype, 'lifecycle\\trigger');
             foreach ($potentialtriggers as $plugin => $potentialtrigger) {
                 // Check if it implements the trigger base class.
                 if (is_a($potentialtrigger, \tool_lifecycle\trigger\base::class, true)) {
-                    $result[$plugin] = $potentialtrigger;
+                    $result[$plugin] = get_string('pluginname', $plugin);
                 }
             }
         }
+
         return $result;
     }
 
@@ -279,16 +263,17 @@ class trigger_manager extends subplugin_manager {
      * @throws \coding_exception
      */
     public static function get_chooseable_trigger_types() {
-        $triggers = self::get_trigger_types_with_class();
+        $triggers = self::get_trigger_types();
         $result = array();
-        foreach ($triggers as $plugin => $class) {
-            $instance = new $class();
-            if ($instance->has_multiple_instances()) {
-                $result[$plugin] = get_string('pluginname', $plugin);
+        foreach ($triggers as $id => $trigger) {
+            $lib = lib_manager::get_trigger_lib($id);
+            if ($lib->has_multiple_instances()) {
+                $result[$id] = $trigger;
             }
         }
         return $result;
     }
+
 
     /**
      * Handles an action for a workflow step.

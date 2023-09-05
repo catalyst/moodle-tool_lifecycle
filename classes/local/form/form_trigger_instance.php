@@ -163,7 +163,7 @@ class form_trigger_instance extends \moodleform {
             $mform->setDefault('instancename', $this->trigger->instancename);
         }
         $mform->setDefault('subpluginnamestatic',
-            get_string('pluginname', $this->subpluginname));
+            get_string('pluginname', 'lifecycletrigger_' . $this->subpluginname));
         $mform->setDefault('subpluginname', $this->subpluginname);
 
         // Setting the default values for the local trigger settings.
