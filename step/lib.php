@@ -142,6 +142,16 @@ abstract class libbase {
     public function abort_course($process) {
     }
 
+    /**
+     * Define description of the step.
+     * Allow subplugins to have custom descriptions.
+     *
+     * @return string description of the trigger.
+     */
+    public function get_plugin_description() {
+        return get_string("pluginname", "lifecyclestep_" . $this->get_subpluginname());
+    }
+
 }
 
 /**

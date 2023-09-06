@@ -115,6 +115,16 @@ abstract class base {
         return get_string("workflow_started", "tool_lifecycle");
     }
 
+    /**
+     * Define description of the trigger.
+     * Allow subplugins to have custom descriptions.
+     *
+     * @return string description of the trigger.
+     */
+    public function get_plugin_description() {
+        return get_string("pluginname", "lifecycletrigger_" . $this->get_subpluginname());
+    }
+
 }
 
 /**
