@@ -245,7 +245,7 @@ class trigger_manager extends subplugin_manager {
         // Additional sub plugins defined under "lifecycle" name space, ie "local_newtrigger\lifecycle".
         // The class name must be trigger (trigger.php) and placed under "classes/lifecycle" folder.
         // The name space must be "local_newtrigger\lifecycle"
-        // The class must extend the trigger base classes (base_automatic or base_manual).
+        // The "local_newtrigger\lifecycle\trigger" class must extend the trigger base classes (base_automatic or base_manual).
         foreach (array_keys(\core_component::get_plugin_types()) as $plugintype) {
             $potentialtriggers = \core_component::get_plugin_list_with_class($plugintype, 'lifecycle\\trigger');
             foreach ($potentialtriggers as $plugin => $potentialtrigger) {
