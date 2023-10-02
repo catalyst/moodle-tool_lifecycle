@@ -144,7 +144,7 @@ abstract class libbase {
 
     /**
      * Define description of the step.
-     * Allow subplugins to have custom descriptions.
+     * Allow subplugins to have custom description.
      *
      * @return string description of the trigger.
      */

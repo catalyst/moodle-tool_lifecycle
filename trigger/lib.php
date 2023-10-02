@@ -117,7 +117,7 @@ abstract class base {
 
     /**
      * Define description of the trigger.
-     * Allow subplugins to have custom descriptions.
+     * Allow subplugins to have custom description.
      *
      * @return string description of the trigger.
      */
