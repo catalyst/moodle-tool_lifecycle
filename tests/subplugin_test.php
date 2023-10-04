@@ -14,10 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_lifecycle;
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->libdir.'/upgradelib.php');
 
 use tool_lifecycle\local\manager\lib_manager;
+use tool_lifecycle\local\manager\step_manager;
 use tool_lifecycle\local\manager\trigger_manager;
+
 
 class subplugin_test extends \advanced_testcase {
 
@@ -50,12 +55,62 @@ class subplugin_test extends \advanced_testcase {
     }
 
     public function test_additional_triggers() {
-        $this->assertFalse(true);
+        $this->resetAfterTest();
+
+        // Add a fake tool plugin, which define a trigger.
+        $mockedcomponent = new ReflectionClass(\core_component::class);
+        $mockedplugins = $mockedcomponent->getProperty('plugins');
+        $mockedplugins->setAccessible(true);
+        $plugins = $mockedplugins->getValue();
+        $plugins['tool'] += ['sampletrigger' => __DIR__ . '/fixtures/fakeplugins/sampletrigger'];
+        $mockedplugins->setValue($plugins);
+
+        // The 'fixture' is not autoloaded, so we need to require it.
+        require_once(__DIR__ . '/fixtures/fakeplugins/sampletrigger/classes//lifecycle/trigger.php');
+
+        // Check if the trigger is available.
+        $triggers = trigger_manager::get_trigger_types();
+        $this->assertArrayHasKey('tool_sampletrigger', $triggers);
+
+        // Lib is loadable.
+        $this->assertInstanceOf('tool_sampletrigger\lifecycle\trigger',
+            lib_manager::get_trigger_lib('tool_sampletrigger'));
+
+        // Unset the fake plugin.
+        unset($plugins['tool']['sampletrigger']);
+        $mockedplugins->setValue($plugins);
     }
 
     public function test_additional_steps() {
-        $this->assertFalse(true);
+        $this->resetAfterTest();
+
+        // Add a fake tool plugin, which define a step.
+        $mockedcomponent = new ReflectionClass(\core_component::class);
+        $mockedplugins = $mockedcomponent->getProperty('plugins');
+        $mockedplugins->setAccessible(true);
+        $plugins = $mockedplugins->getValue();
+        $plugins['tool'] += ['samplestep' => __DIR__ . '/fixtures/fakeplugins/samplestep'];
+        $mockedplugins->setValue($plugins);
+
+        // The 'fixture'  is not autoloaded, so we need to require it.
+        require_once(__DIR__ . '/fixtures/fakeplugins/samplestep/classes//lifecycle/step.php');
+        require_once(__DIR__ . '/fixtures/fakeplugins/samplestep/classes//lifecycle/interaction.php');
+
+        // Check if the step is available.
+        $steps = step_manager::get_step_types();
+        $this->assertArrayHasKey('tool_samplestep', $steps);
+
+        // Lib is loadable.
+        $this->assertInstanceOf('tool_samplestep\lifecycle\step',
+            lib_manager::get_step_lib('tool_samplestep'));
+
+        // Lib subtype is loadable.
+        $this->assertInstanceOf('tool_samplestep\lifecycle\interaction',
+            lib_manager::get_step_interactionlib('tool_samplestep'));
+
+        // Unset the fake plugin.
+        unset($plugins['tool']['samplestep']);
+        $mockedplugins->setValue($plugins);
     }
 
 }
-
