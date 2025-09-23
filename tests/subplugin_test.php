@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_lifecycle;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -23,10 +25,20 @@ use tool_lifecycle\local\manager\lib_manager;
 use tool_lifecycle\local\manager\step_manager;
 use tool_lifecycle\local\manager\trigger_manager;
 
+/**
+ * Tests the subplugins.
+ * @package    tool_lifecycle
+ * @copyright  2025 Catalyst IT Australia Pty Ltd
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+final class subplugin_test extends \advanced_testcase {
 
-class subplugin_test extends \advanced_testcase {
 
-    public function test_builtin_triggers() {
+    /**
+     * Test built in triggers.
+     * @covers \tool_lifecycle\local\manager\subplugin_manager
+     */
+    public function test_builtin_triggers(): void {
         $this->resetAfterTest();
         $builtintriggers = \core_component::get_plugin_list('lifecycletrigger');
         $triggers = trigger_manager::get_trigger_types();
@@ -40,7 +52,11 @@ class subplugin_test extends \advanced_testcase {
         }
     }
 
-    public function test_builtin_steps() {
+    /**
+     * Test built in steps.
+     * @covers \tool_lifecycle\local\manager\subplugin_manager
+     */
+    public function test_builtin_steps(): void {
         $this->resetAfterTest();
         $builtinsteps = \core_component::get_plugin_list('lifecyclestep');
         $steps = step_manager::get_step_types();
@@ -54,7 +70,11 @@ class subplugin_test extends \advanced_testcase {
         }
     }
 
-    public function test_additional_triggers() {
+    /**
+     * Test additional triggers
+     * @covers \tool_lifecycle\local\manager\subplugin_manager
+     */
+    public function test_additional_triggers(): void {
         $this->resetAfterTest();
 
         // Add a fake tool plugin, which define a trigger.
@@ -81,7 +101,11 @@ class subplugin_test extends \advanced_testcase {
         $mockedplugins->setValue($plugins);
     }
 
-    public function test_additional_steps() {
+    /**
+     * Test additional steps
+     * @covers \tool_lifecycle\local\manager\subplugin_manager
+     */
+    public function test_additional_steps(): void {
         $this->resetAfterTest();
 
         // Add a fake tool plugin, which define a step.
