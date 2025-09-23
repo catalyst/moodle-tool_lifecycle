@@ -23,9 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
+use tool_lifecycle\local\manager\lib_manager;
+use tool_lifecycle\local\manager\step_manager;
+use tool_lifecycle\local\manager\trigger_manager;
 use tool_lifecycle\tabs;
+
+defined('MOODLE_INTERNAL') || die;
 
 // Check for the moodle/site:config permission.
 if ($hassiteconfig) {
@@ -89,6 +92,8 @@ if ($hassiteconfig) {
                 $settings->add(new admin_setting_description('lifecycletriggersetting_'.$trigger,
                     $triggername,
                     $plugindescription.$uninstall));
+                $lib = lib_manager::get_trigger_lib($trigger);
+                $lib->get_plugin_settings();
             }
         }
     } else {
@@ -111,6 +116,8 @@ if ($hassiteconfig) {
             $settings->add(new admin_setting_description('lifecyclestepsetting_'.$step,
                 $stepname,
                 $plugindescription));
+            $lib = lib_manager::get_step_lib($step);
+            $lib->get_plugin_settings();
         }
     } else {
         $settings->add(new admin_setting_heading('adminsettings_nosteps',

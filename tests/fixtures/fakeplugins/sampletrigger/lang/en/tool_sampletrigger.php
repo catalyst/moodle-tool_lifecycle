@@ -14,19 +14,5 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Version details.
- *
- * @package    tool_lifecycle
- * @copyright  2025 Thomas Niedermaier University Münster
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-defined('MOODLE_INTERNAL') || die;
-
-$plugin->maturity = MATURITY_STABLE;
-$plugin->version  = 2025092300;
-$plugin->component = 'tool_lifecycle';
-$plugin->requires = 2022112800; // Requires Moodle 4.1+.
-$plugin->supported = [401, 405];
-$plugin->release   = 'v4.5-r5';
+$string['pluginname'] = 'Sample trigger';
+$string['privacy:metadata'] = 'The plugin does not store any personal data.';
