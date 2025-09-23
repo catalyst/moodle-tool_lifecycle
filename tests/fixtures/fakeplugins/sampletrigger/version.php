@@ -16,8 +16,8 @@
 
 /**
  * Fake component for testing
- *
- * @package    core
+ * @copyright  2025 Catalyst IT Australia Pty Ltd
+ * @package    tool_lifecycle
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
