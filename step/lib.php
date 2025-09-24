@@ -150,7 +150,6 @@ abstract class libbase {
     public function abort_course($process) {
     }
 
-
     /**
      * Ensure validity of settings upon backup restoration.
      * @param array $settings
