@@ -14,18 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Lang strings for semester independent trigger
- *
- * @package lifecycletrigger_semindependent
- * @copyright  2025 Thomas Niedermaier University Münster
- * @copyright  2019 Tobias Reischmann WWU
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+namespace lifecycletrigger_semindependent\privacy;
 
-$string['exclude'] = 'Exclude semester independent';
-$string['exclude_help'] = 'If true, semester independent courses are excluded from workflow,
-otherwise they are included.';
-$string['plugindescription'] = 'Include or exclude courses that have no start date.';
-$string['pluginname'] = 'Semester independent trigger';
-$string['privacy:metadata'] = 'Does not store user specific data';
+use core_privacy\local\metadata\null_provider;
+
+/**
+ * Privacy subsystem implementation for lifecycletrigger_semindependent.
+ *
+ * @package     lifecycletrigger_semindependent
+ * @copyright   2025 Thomas Niedermaier University Münster
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class provider implements null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return string the reason
+     */
+    public static function get_reason(): string {
+        return 'privacy:metadata';
+    }
+}
