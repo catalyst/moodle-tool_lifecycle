@@ -49,7 +49,7 @@ class pushbackuptask extends libbase {
      */
     public function process_course($processid, $instanceid, $course) {
         $asynctask = new course_backup_task();
-        $asynctask->set_custom_data(['courseid' => $course->id]);
+        $asynctask->set_custom_data(['courseid' => $course->id, 'stepid' => $instanceid]);
         \core\task\manager::queue_adhoc_task($asynctask);
         return step_response::proceed();
     }
@@ -73,5 +73,13 @@ class pushbackuptask extends libbase {
      */
     public function get_subpluginname() {
         return 'pushbackuptask';
+    }
+
+    /**
+     * Returns the string of the specific icon for this trigger.
+     * @return string icon string
+     */
+    public function get_icon() {
+        return 'i/emojicategoryobjects';
     }
 }

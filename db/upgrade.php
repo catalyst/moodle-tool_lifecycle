@@ -613,5 +613,65 @@ function xmldb_tool_lifecycle_upgrade($oldversion) {
 
     }
 
+    if ($oldversion < 2025092302) {
+        $table = new xmldb_table('tool_lifecycle_workflow');
+
+        // Define field "triggeredpercron" to be added to tool_lifecycle_workflow.
+        $field = new xmldb_field('triggeredpercron', XMLDB_TYPE_INTEGER, '5', null, null, null, '0', 'includedelayedcourses');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field "triggeredperday" to be added to tool_lifecycle_workflow.
+        $field = new xmldb_field('triggeredperday', XMLDB_TYPE_INTEGER, '5', null, null, null, '0', 'triggeredpercron');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $table = new xmldb_table('tool_lifecycle_process');
+
+        // Define field "timestampcreated" to be added to tool_lifecycle_process.
+        $field = new xmldb_field('timestampcreated', XMLDB_TYPE_INTEGER, '11', null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field step to be added to tool_lifecycle_backups.
+        $table = new xmldb_table('tool_lifecycle_backups');
+        $field = new xmldb_field('step', XMLDB_TYPE_INTEGER, '20', null, null, null, null, 'backupcreated');
+
+        // Conditionally launch add field step.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field description to be added to tool_lifecycle_workflow.
+        $table = new xmldb_table('tool_lifecycle_workflow');
+        $field = new xmldb_field('description', XMLDB_TYPE_CHAR, '500', null, null, null, null, 'andor');
+
+        // Conditionally launch add field description.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Lifecycle savepoint reached.
+        upgrade_plugin_savepoint(true, 2025092302, 'tool', 'lifecycle');
+    }
+
+    if ($oldversion < 2025092303) {
+
+        // Define field forum_discussion to be added to tool_lifecycle_workflow.
+        $table = new xmldb_table('tool_lifecycle_workflow');
+        $field = new xmldb_field('forum_discussion', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'description');
+
+        // Conditionally launch add field forum_discussion.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Lifecycle savepoint reached.
+        upgrade_plugin_savepoint(true, 2025092303, 'tool', 'lifecycle');
+    }
+
     return true;
 }
